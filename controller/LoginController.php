@@ -34,8 +34,12 @@ require_once '../repository/UserRepository.php';
           $username = htmlspecialchars($_POST['username']);
           $email = htmlspecialchars($_POST['email']);
           $password = htmlspecialchars($_POST['password']);
-          $userRepository = new UserRepository();
-          $userRepository->create($username, $email, $password);
+          $password_again = htmlspecialchars($_POST['password-again']);
+          if ($password == $password_again) {
+            $userRepository = new UserRepository();
+            $userRepository->create($username, $email, $password);
+          }
+          
       }
       // Anfrage an die URI /user weiterleiten (HTTP 302)
       header('Location: /login');
