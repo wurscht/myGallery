@@ -11,7 +11,6 @@ require_once '../repository/UserRepository.php';
      */
     public function index()
     {
-      $userRepository = new UserRepository();
       $view = new View('login_index');
       $view->title = 'MyGallery';
       $view->heading = 'Login';
@@ -29,6 +28,34 @@ require_once '../repository/UserRepository.php';
       $view->display();
     }
     
+    /*
+    public function register() {
+      if ($_POST)
+    }
+    */
+    
+    
+    /**
+     *Funktion zum Ausführen des Logins
+     *
+     */
+    public function login() {
+      if (isset($_POST['send']) && $_Post['send']) {
+        $error = false;
+        $errors = [];
+        $userRepository = new UserRepository();
+        $user = $userRepository->getUser($_POST['email']);
+        $password = $userRepository-getPassword($_POST['email']);
+        var_dump($password);
+        if ($user && $password == $_POST['password']) {
+          echo "Juhu";
+        } else {
+          echo "Faaaaautsch";
+        }
+      }
+      
+    }
+    
     public function doCreate() {
       if ($_POST['send']) {
           $username = htmlspecialchars($_POST['username']);
@@ -42,7 +69,7 @@ require_once '../repository/UserRepository.php';
           
       }
       // Anfrage an die URI /user weiterleiten (HTTP 302)
-      header('Location: /login');
+      header('Location:'. $GLOBALS['appurl'] . '/login/');
     }
     
     public function delete() {

@@ -23,5 +23,32 @@ require_once '../lib/Repository.php';
       
       return $statement->insert_id;
     }
+    
+    public function getUser($email) {
+      $query = "SELECT * FROM $this->tableName WHERE email = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->execute();
+
+      $result = $statement->get_result();
+      if (!$result) {
+        throw new Exception($statement->error);
+      }
+    }
+    
+    public function getPassword($email) {
+      $query = "SELECT password FROM $this->tableName WHERE email = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->execute();
+      
+      $result = $statement->get_result();
+      if (!$result) {
+        throw new Exception($statement->error);
+      } else {
+        return $result;
+      }
+    }
+    
   }
 ?>
