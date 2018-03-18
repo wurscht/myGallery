@@ -40,10 +40,24 @@ require_once '../repository/UserRepository.php';
      *
      */
     public function login() {
-      if (isset($_POST['send']) && $_Post['send']) {
+        
+    if (isset($_POST['email']) and isset($_POST['passwort'])) {
         $error = false;
         $errors = [];
         $userRepository = new UserRepository();
+        if ($userRepository->getUserId($_POST['email'], $_POST['passwort']) == 0) {
+            echo "<div class='error-message col-md-6 offset-md-3'>";
+            echo "<p class='alert alert-danger'>Bitte geben Sie eine gültige E-Mail Adresse und Passwort ein</p>";
+            echo "</div>";
+        } elseif ($userRepository->getUserId($_POST['email'], $_POST['passwort']) > 0) {
+            $_SESSION['userId'] = getUserId($_POST['email'], $_POST['passwort']);
+            var_dump($_SESSION['userId']);
+            //header ("Location: index.php?function=blogs_member&bid=0");
+        }
+    }
+       /* 
+      if (isset($_POST['send']) && $_Post['send']) {
+        
         $user = $userRepository->getUser($_POST['email']);
         $password = $userRepository-getPassword($_POST['email']);
         var_dump($password);
@@ -53,6 +67,7 @@ require_once '../repository/UserRepository.php';
           echo "Faaaaautsch";
         }
       }
+        */
       
     }
     
