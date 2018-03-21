@@ -40,8 +40,9 @@ require_once '../repository/UserRepository.php';
      *
      */
     public function login() {
+    echo "<p>Wurscht<p>";
         
-    if (isset($_POST['email']) and isset($_POST['passwort'])) {
+    if ($_POST['send'] && isset($_POST['email']) && isset($_POST['passwort'])) {
         $error = false;
         $errors = [];
         $userRepository = new UserRepository();
