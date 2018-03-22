@@ -26,8 +26,15 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
 			<!-- fix schf -->
-            <li><a href="<?=$GLOBALS['appurl']?>/login">Login</a></li>
-            <li><a href="<?=$GLOBALS['appurl']?>/login/registration">Registration</a></li>
+            <?php
+            if (isset($_SESSION['userId']) == 0) {
+              echo "<li><a href='$GLOBALS[appurl]/login'>Login</a></li>";
+              echo "<li><a href='$GLOBALS[appurl]/login/registration'>Registration</a></li>";
+            } else {
+              echo "<li><a href='$GLOBALS[appurl]/gallery'>My Gallery</a></li>";
+              echo "<li><a href='$GLOBALS[appurl]/login/logout'>Logout</a></li>";
+            }
+            ?>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

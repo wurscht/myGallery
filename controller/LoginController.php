@@ -40,21 +40,22 @@ require_once '../repository/UserRepository.php';
      *
      */
     public function login() {
-    echo "<p>Wurscht<p>";
         
-    if ($_POST['send'] && isset($_POST['email']) && isset($_POST['passwort'])) {
+    if ($_POST['send'] && isset($_POST['email']) && isset($_POST['password'])) {
         $error = false;
         $errors = [];
         $userRepository = new UserRepository();
-        if ($userRepository->getUserId($_POST['email'], $_POST['passwort']) == 0) {
+        var_dump($_POST);
+        var_dump(md5($_POST['password']));
+        $userId = $userRepository->getUserId($_POST['email'], md5($_POST['password']));
+        if ($userId > 0) {
+            $_SESSION['userId'] = $userId;
+            header('Location:'. $GLOBALS['appurl'] . '/gallery');
+        } else {
             echo "<div class='error-message col-md-6 offset-md-3'>";
             echo "<p class='alert alert-danger'>Bitte geben Sie eine gültige E-Mail Adresse und Passwort ein</p>";
             echo "</div>";
-        } elseif ($userRepository->getUserId($_POST['email'], $_POST['passwort']) > 0) {
-            $_SESSION['userId'] = getUserId($_POST['email'], $_POST['passwort']);
-            var_dump($_SESSION['userId']);
-            //header ("Location: index.php?function=blogs_member&bid=0");
-        }
+        } 
     }
        /* 
       if (isset($_POST['send']) && $_Post['send']) {
@@ -82,7 +83,6 @@ require_once '../repository/UserRepository.php';
             $userRepository = new UserRepository();
             $userRepository->create($username, $email, $password);
           }
-          
       }
       // Anfrage an die URI /user weiterleiten (HTTP 302)
       header('Location:'. $GLOBALS['appurl'] . '/login/');
@@ -93,6 +93,11 @@ require_once '../repository/UserRepository.php';
         $userRepository->deleteById($_GET['id']);
         // Anfrage an die URI /user weiterleiten (HTTP 302)
         header('Location: /login');
+    }
+    
+    public function logout() {
+      session_destroy();
+      header('Location:'. $GLOBALS['appurl'] . '/login');
     }
 }
 ?>

@@ -25,11 +25,23 @@ require_once '../lib/Repository.php';
     }
     
     public function getUserId($email, $password) {
-        $db = getValue('bilderdb');
-        $email = strtolower($email);
-        $result = $db->query("SELECT uid FROM user WHERE lower(email)='".$email."' AND password='".md5($password)."'");
-        if ($user = $result->fetchArray()) return $user[0];
-        else return 0;
+      
+      $query = "SELECT uid FROM $this->tableName WHERE email = ? AND password = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->bind_param('ss', $email, $password);
+      $statement->execute();
+      
+      
+      
+      //if (!$statement->execute()) {
+      //  throw new Exception($statement->error);
+      //}
+      
+      $result = $statement->get_result();
+      $row = $result->fetch_object();
+      
+      return $row->uid;
     }
   }
 ?>
