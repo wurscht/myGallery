@@ -1,12 +1,12 @@
 <?php
 require_once '../repository/UserRepository.php';
 /**
- * Controller für das Login und die Registration, siehe Dokumentation im DefaultController.
+ * Controller for login and registration.
  */
   class LoginController
   {
     /**
-     * Default-Seite für das Login: Zeigt das Login-Formular an
+     * Shows login form
 	 * Dispatcher: /login
      */
     public function index()
@@ -16,8 +16,9 @@ require_once '../repository/UserRepository.php';
       $view->heading = 'Login';
       $view->display();
     }
+    
     /**
-     * Zeigt das Registrations-Formular an
+     * Shows registration form
 	 * Dispatcher: /login/registration
      */
     public function registration()
@@ -28,32 +29,28 @@ require_once '../repository/UserRepository.php';
       $view->display();
     }
     
-    /*
-    public function register() {
-      if ($_POST)
-    }
-    */
-    
-    
     /**
-     *Funktion zum Ausführen des Logins
+     *Functions for login
      *
      */
     public function login() {
         
       if ($_POST['send'] && isset($_POST['email']) && isset($_POST['password'])) {
-          $error = false;
-          $errors = [];
           $userRepository = new UserRepository();
-          var_dump($_POST);
-          var_dump(md5($_POST['password']));
-          $userId = $userRepository->getUserId($_POST['email'], md5($_POST['password']));
-          if ($userId > 0) {
-              $_SESSION['userId'] = $userId;
-              header('Location:'. $GLOBALS['appurl'] . '/gallery');
+          $hash = $userRepository->getPasswordHash($_POST['email']);
+          $password = password_verify($_POST['password'], $hash);
+          var_dump($password);
+          die;
+          $userId = $userRepository->getUserId($_POST['email'], $_POST['password']);
+          if ($userId > 0 && $password) {
+            $_SESSION['userId'] = $userId;
+            header('Location:'. $GLOBALS['appurl'] . '/gallery');
+          } else if ($_POST['email'] == '' || $_POST['password'] == '') {
+            $_SESSION['error'] = "Please fill in email and password!";
+            header('Location:'. $GLOBALS['appurl'] . '/login');
           } else {
-              $_SESSION['error'] = "Email or password are not correct. Please try again.";
-              header('Location:'. $GLOBALS['appurl'] . '/login');
+            $_SESSION['error'] = "Email or password are not correct! Please try again.";
+            header('Location:'. $GLOBALS['appurl'] . '/login');
           } 
       }
     }
@@ -72,13 +69,13 @@ require_once '../repository/UserRepository.php';
             $_SESSION['error'] = "Passwords are not equal. Please try again";
             header('Location:'. $GLOBALS['appurl'] . '/login/registration');
           } else if (!pattern || strlen($password) <8) {
-            $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length";
+            $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length!";
             header('Location:'. $GLOBALS['appurl'] . '/login/registration');
           } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $_SESSION['error'] = "Invalid email format";
+            $_SESSION['error'] = "Invalid email format!";
             header('Location:'. $GLOBALS['appurl'] . '/login/registration');
           } else if (!$userRepository->checkEmail($email)) {
-            $_SESSION['error'] = "This Email is already used";
+            $_SESSION['error'] = "This Email is already used!";
             header('Location:'. $GLOBALS['appurl'] . '/login/registration');
           } else {
             $userRepository->create($username, $email, $password);
@@ -98,6 +95,21 @@ require_once '../repository/UserRepository.php';
     }
     
     public function logout() {
+      
+      // Unset all of the session variables.
+      $_SESSION = array();
+      
+      /* If it's desired to kill the session, also delete the session cookie.
+       * Note: This will destroy the session, and not just the session data!
+       */
+      if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+          $params["path"], $params["domain"],
+          $params["secure"], $params["httponly"]
+        );
+      }
+      // Finally, destroy the session.
       session_destroy();
       header('Location:'. $GLOBALS['appurl'] . '/login');
     }
