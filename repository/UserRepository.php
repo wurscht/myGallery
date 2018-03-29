@@ -43,5 +43,22 @@ require_once '../lib/Repository.php';
       
       return $row->uid;
     }
+    
+    public function checkEmail($email) {
+      $query = "SELECT email FROM $this->tableName WHERE email = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->bind_param('s', $email);
+      $statement->execute();
+    
+      $result = $statement->get_result();
+      var_dump($result->num_rows);
+      
+      if ($result->num_rows < 1 ) {
+        return true;
+      } 
+      return false;
+      
+    }
   }
 ?>

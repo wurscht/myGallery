@@ -41,52 +41,54 @@ require_once '../repository/UserRepository.php';
      */
     public function login() {
         
-    if ($_POST['send'] && isset($_POST['email']) && isset($_POST['password'])) {
-        $error = false;
-        $errors = [];
-        $userRepository = new UserRepository();
-        var_dump($_POST);
-        var_dump(md5($_POST['password']));
-        $userId = $userRepository->getUserId($_POST['email'], md5($_POST['password']));
-        if ($userId > 0) {
-            $_SESSION['userId'] = $userId;
-            header('Location:'. $GLOBALS['appurl'] . '/gallery');
-        } else {
-            echo "<div class='error-message col-md-6 offset-md-3'>";
-            echo "<p class='alert alert-danger'>Bitte geben Sie eine gültige E-Mail Adresse und Passwort ein</p>";
-            echo "</div>";
-        } 
-    }
-       /* 
-      if (isset($_POST['send']) && $_Post['send']) {
-        
-        $user = $userRepository->getUser($_POST['email']);
-        $password = $userRepository-getPassword($_POST['email']);
-        var_dump($password);
-        if ($user && $password == $_POST['password']) {
-          echo "Juhu";
-        } else {
-          echo "Faaaaautsch";
-        }
+      if ($_POST['send'] && isset($_POST['email']) && isset($_POST['password'])) {
+          $error = false;
+          $errors = [];
+          $userRepository = new UserRepository();
+          var_dump($_POST);
+          var_dump(md5($_POST['password']));
+          $userId = $userRepository->getUserId($_POST['email'], md5($_POST['password']));
+          if ($userId > 0) {
+              $_SESSION['userId'] = $userId;
+              header('Location:'. $GLOBALS['appurl'] . '/gallery');
+          } else {
+              $_SESSION['error'] = "Email or password are not correct. Please try again.";
+              header('Location:'. $GLOBALS['appurl'] . '/login');
+          } 
       }
-        */
-      
     }
     
     public function doCreate() {
-      if ($_POST['send']) {
+      if (isset($_POST['send'])) {
           $username = htmlspecialchars($_POST['username']);
           $email = htmlspecialchars($_POST['email']);
+          
           $password = htmlspecialchars($_POST['password']);
           $password_again = htmlspecialchars($_POST['password-again']);
-          if ($password == $password_again) {
-            $userRepository = new UserRepository();
+          $userRepository = new UserRepository();
+          $pattern = preg_match('(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$', $password);
+        
+          if ($password != $password_again) {
+            $_SESSION['error'] = "Passwords are not equal. Please try again";
+            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+          } else if (!pattern || strlen($password) <8) {
+            $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length";
+            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+          } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = "Invalid email format";
+            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+          } else if (!$userRepository->checkEmail($email)) {
+            $_SESSION['error'] = "This Email is already used";
+            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+          } else {
             $userRepository->create($username, $email, $password);
-          }
+            header('Location:'. $GLOBALS['appurl'] . '/login/');
+          } 
       }
-      // Anfrage an die URI /user weiterleiten (HTTP 302)
-      header('Location:'. $GLOBALS['appurl'] . '/login/');
     }
+
+
+
     
     public function delete() {
         $userRepository = new UserRepository();
