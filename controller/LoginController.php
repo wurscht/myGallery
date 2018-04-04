@@ -2,12 +2,14 @@
 require_once '../repository/UserRepository.php';
 /**
  * Controller for login and registration.
+ *
  */
   class LoginController
   {
     /**
      * Shows login form
 	 * Dispatcher: /login
+     *
      */
     public function index()
     {
@@ -20,6 +22,7 @@ require_once '../repository/UserRepository.php';
     /**
      * Shows registration form
 	 * Dispatcher: /login/registration
+     *
      */
     public function registration()
     {
@@ -30,68 +33,69 @@ require_once '../repository/UserRepository.php';
     }
     
     /**
-     *Functions for login
+     * Functions for login
+     * Logs a User to his member area
      *
      */
     public function login() {
         
       if ($_POST['send'] && isset($_POST['email']) && isset($_POST['password'])) {
-          $userRepository = new UserRepository();
-          $hash = $userRepository->getPasswordHash($_POST['email']);
-          $password = password_verify($_POST['password'], $hash);
-          var_dump($password);
-          die;
-          $userId = $userRepository->getUserId($_POST['email'], $_POST['password']);
-          if ($userId > 0 && $password) {
-            $_SESSION['userId'] = $userId;
-            header('Location:'. $GLOBALS['appurl'] . '/gallery');
-          } else if ($_POST['email'] == '' || $_POST['password'] == '') {
-            $_SESSION['error'] = "Please fill in email and password!";
-            header('Location:'. $GLOBALS['appurl'] . '/login');
-          } else {
-            $_SESSION['error'] = "Email or password are not correct! Please try again.";
-            header('Location:'. $GLOBALS['appurl'] . '/login');
-          } 
+        $userRepository = new UserRepository();
+        $hash = $userRepository->getPasswordHash($_POST['email']);
+        $password = password_verify($_POST['password'], $hash);
+        $userId = $userRepository->getUserId($_POST['email'], $hash);
+        
+        if ($userId > 0 && $password) {
+          $_SESSION['userId'] = $userId;
+          header('Location:'. $GLOBALS['appurl'] . '/gallery');
+        } else if ($_POST['email'] == '' || $_POST['password'] == '') {
+          $_SESSION['error'] = "Please fill in email and password!";
+          header('Location:'. $GLOBALS['appurl'] . '/login');
+        } else {
+          $_SESSION['error'] = "Email or password are not correct! Please try again.";
+          header('Location:'. $GLOBALS['appurl'] . '/login');
+        } 
       }
     }
     
+    /**
+     * Creates a User after registration and saves the user to the database
+     *
+     */
     public function doCreate() {
+      
       if (isset($_POST['send'])) {
-          $username = htmlspecialchars($_POST['username']);
-          $email = htmlspecialchars($_POST['email']);
-          
-          $password = htmlspecialchars($_POST['password']);
-          $password_again = htmlspecialchars($_POST['password-again']);
-          $userRepository = new UserRepository();
-          $pattern = preg_match('(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$', $password);
+        $username = htmlspecialchars($_POST['username']);
+        $email = htmlspecialchars($_POST['email']);
         
-          if ($password != $password_again) {
-            $_SESSION['error'] = "Passwords are not equal. Please try again";
-            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
-          } else if (!pattern || strlen($password) <8) {
-            $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length!";
-            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
-          } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $_SESSION['error'] = "Invalid email format!";
-            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
-          } else if (!$userRepository->checkEmail($email)) {
-            $_SESSION['error'] = "This Email is already used!";
-            header('Location:'. $GLOBALS['appurl'] . '/login/registration');
-          } else {
-            $userRepository->create($username, $email, $password);
-            header('Location:'. $GLOBALS['appurl'] . '/login/');
-          } 
+        $password = htmlspecialchars($_POST['password']);
+        $password_again = htmlspecialchars($_POST['password-again']);
+        $userRepository = new UserRepository();
+        $pattern = preg_match('(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$', $password);
+      
+        if ($password != $password_again) {
+          $_SESSION['error'] = "Passwords are not equal. Please try again";
+          header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+        } else if (!pattern || strlen($password) <8) {
+          $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length!";
+          header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $_SESSION['error'] = "Invalid email format!";
+          header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+        } else if (!$userRepository->checkEmail($email)) {
+          $_SESSION['error'] = "This Email is already used!";
+          header('Location:'. $GLOBALS['appurl'] . '/login/registration');
+        } else {
+          $userRepository->create($username, $email, $password);
+          header('Location:'. $GLOBALS['appurl'] . '/login/');
+        } 
       }
     }
-
-
-
     
     public function delete() {
-        $userRepository = new UserRepository();
-        $userRepository->deleteById($_GET['id']);
-        // Anfrage an die URI /user weiterleiten (HTTP 302)
-        header('Location: /login');
+      $userRepository = new UserRepository();
+      $userRepository->deleteById($_GET['id']);
+      header('Location: /login');
     }
     
     public function logout() {
@@ -101,6 +105,7 @@ require_once '../repository/UserRepository.php';
       
       /* If it's desired to kill the session, also delete the session cookie.
        * Note: This will destroy the session, and not just the session data!
+       *
        */
       if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();

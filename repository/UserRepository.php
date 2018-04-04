@@ -3,8 +3,8 @@ require_once '../lib/Repository.php';
 /**
  * Datenbankschnittstelle für die Benutzer
  */
-  class UserRepository extends Repository
-  {
+  class UserRepository extends Repository {
+    
     protected $tableName = 'user';
     
     public function create($username, $email, $password) {
@@ -28,6 +28,19 @@ require_once '../lib/Repository.php';
       return $statement->insert_id;
     }
     
+    public function edit($id, $username, $email, $password) {
+      
+      $query = "UPDATE $this->tableName SET username = ?, email = ?, password = ? WHERE id = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      if($statement === false) {
+        echo ConnectionHandler::getConnection()->error;
+      }
+      $statement->bind-param('sssi', $username, $email, $password, $id);
+      
+      return $statement->insert_id;
+    }
+    
     public function getUserId($email, $password) {
       
       $query = "SELECT uid FROM $this->tableName WHERE email = ? AND password = ?";
@@ -36,11 +49,9 @@ require_once '../lib/Repository.php';
       $statement->bind_param('ss', $email, $password);
       $statement->execute();
       
-      
-      
-      //if (!$statement->execute()) {
-      //  throw new Exception($statement->error);
-      //}
+      if (!$statement->execute()) {
+        throw new Exception($statement->error);
+      }
       
       $result = $statement->get_result();
       $row = $result->fetch_object();
@@ -58,10 +69,12 @@ require_once '../lib/Repository.php';
       
       $result = $statement->get_result();
       $row = $result->fetch_object();
+      
       return $row->password;
     }
     
     public function checkEmail($email) {
+      
       $query = "SELECT email FROM $this->tableName WHERE email = ?";
       
       $statement = ConnectionHandler::getConnection()->prepare($query);
@@ -72,9 +85,9 @@ require_once '../lib/Repository.php';
       
       if ($result->num_rows < 1 ) {
         return true;
-      } 
-      return false;
+      }
       
+      return false;
     }
   }
 ?>
