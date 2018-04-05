@@ -28,15 +28,25 @@ require_once '../lib/Repository.php';
       return $statement->insert_id;
     }
     
-    public function edit($id, $username, $email, $password) {
+    public function edit($id, $username, $email, $password, $isAdmin) {
+        
+      $options = [
+        'cost' => 12,
+      ];
       
-      $query = "UPDATE $this->tableName SET username = ?, email = ?, password = ? WHERE id = ?";
+      $password = password_hash($password, PASSWORD_BCRYPT, $options);
+      
+      $query = "UPDATE $this->tableName SET username = ?, email = ?, password = ?, isAdmin = ? WHERE uid = ?";
       
       $statement = ConnectionHandler::getConnection()->prepare($query);
       if($statement === false) {
         echo ConnectionHandler::getConnection()->error;
       }
-      $statement->bind-param('sssi', $username, $email, $password, $id);
+      $statement->bind_param('sssii', $username, $email, $password, $isAdmin, $id);
+        
+      if (!$statement->execute()) {
+          throw new Exception($statement->error);
+      }
       
       return $statement->insert_id;
     }
@@ -58,7 +68,7 @@ require_once '../lib/Repository.php';
       
       return $row->uid;
     }
-    
+   
     public function getPasswordHash($email) {
       
       $query = "SELECT password FROM $this->tableName WHERE email = ?";

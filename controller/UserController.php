@@ -19,7 +19,7 @@ require_once '../repository/UserRepository.php';
       
       $userRepository = new UserRepository();
     
-      $id = $_GET['id'];
+      $id = $_SESSION['userId'];
       if(!$id){
         echo "User has no id!";
       }
@@ -27,32 +27,40 @@ require_once '../repository/UserRepository.php';
       $view = new View('user_edit');
       $view->title = 'Edit user informations';
       $view->heading = 'Edit user informations';
-      $view->users = $userRepository->readById($id);
+      $view->user = $userRepository->readById($id);
+      $view->users = $userRepository->readAll();
       $view->display();
     }
   
     public function doEdit() {
     
-      if($_POST['send']) {
-        $id = htmlspecialchars($_POST['id]']);
+      if(isset($_POST['send'])) {
+        $id = $_SESSION['userId'];
         $username = htmlspecialchars($_POST['username']);
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
         $userRepository = new UserRepository();
-        $pattern = preg_match('(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$', $password);
+        if ($_POST['isAdmin'] == 'on') {
+          $isAdmin = 1; 
+        } else {
+          $isAdmin = 0;
+        }
+        $pattern = preg_match('~(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$~', $password);
+        
       
-        if (!pattern || strlen($password) <8) {
+        if (!$pattern || strlen($password) <8) {
           $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length!";
-          header('Location:'. $GLOBALS['appurl'] . '/edit');
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           $_SESSION['error'] = "Invalid email format!";
-          header('Location:'. $GLOBALS['appurl'] . '/edit');
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
         } else if (!$userRepository->checkEmail($email)) {
           $_SESSION['error'] = "This Email is already used!";
-          header('Location:'. $GLOBALS['appurl'] . '/edit');
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
         } else {
-          $userRepository->edit($id, $username, $email, $password);
-          header('Location:'. $GLOBALS['appurl'] . '/edit');
+          $_SESSION['success'] = "Your changes were made";
+          $userRepository->edit($id, $username, $email, $password, $isAdmin);
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
         }
       }
     }

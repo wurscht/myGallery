@@ -71,12 +71,12 @@ require_once '../repository/UserRepository.php';
         $password = htmlspecialchars($_POST['password']);
         $password_again = htmlspecialchars($_POST['password-again']);
         $userRepository = new UserRepository();
-        $pattern = preg_match('(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$', $password);
+        $pattern = preg_match('~(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$~', $password);
       
         if ($password != $password_again) {
           $_SESSION['error'] = "Passwords are not equal. Please try again";
           header('Location:'. $GLOBALS['appurl'] . '/login/registration');
-        } else if (!pattern || strlen($password) <8) {
+        } else if (!$pattern || strlen($password) <8) {
           $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length!";
           header('Location:'. $GLOBALS['appurl'] . '/login/registration');
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
