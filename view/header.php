@@ -31,7 +31,7 @@
               echo "<li><a href='$GLOBALS[appurl]/login'>Login</a></li>";
               echo "<li><a href='$GLOBALS[appurl]/login/registration'>Registration</a></li>";
             } else {
-              echo "<li><a href='$GLOBALS[appurl]/gallery'>My Gallery</a></li>";
+              echo "<li><a href='$GLOBALS[appurl]/gallery'>My Galleries</a></li>";
               echo "<li><a href='$GLOBALS[appurl]/user/edit'>Edit Account</a></li>";
               echo "<li><a href='$GLOBALS[appurl]/login/logout'>Logout</a></li>";
             }

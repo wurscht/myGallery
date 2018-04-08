@@ -54,9 +54,9 @@ require_once '../repository/UserRepository.php';
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           $_SESSION['error'] = "Invalid email format!";
           header('Location:'. $GLOBALS['appurl'] . '/user/edit');
-        } else if (!$userRepository->checkEmail($email)) {
+        /*} else if (!$userRepository->checkEmail($email)) {
           $_SESSION['error'] = "This Email is already used!";
-          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');*/
         } else {
           $_SESSION['success'] = "Your changes were made";
           $userRepository->edit($id, $username, $email, $password, $isAdmin);

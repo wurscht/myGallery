@@ -3,10 +3,13 @@
 class GalleryController {
   
   public function index() {
+      
+    $galleryRepository = new GalleryRepository();
     
     $view = new View('gallery_index');
-    $view->title = 'MyGallery';
-    $view->heading = 'Gallery';
+    $view->title = 'My Galleries';
+    $view->heading = 'My Galleries';
+    $view->galleries = $galleryRepository->readAll();
     $view->display();
   }
   

@@ -45,7 +45,7 @@ require_once '../lib/Repository.php';
       $statement->bind_param('sssii', $username, $email, $password, $isAdmin, $id);
         
       if (!$statement->execute()) {
-          throw new Exception($statement->error);
+          throw new Exception("An error occurs: This email is already used! $statement->error");
       }
       
       return $statement->insert_id;
