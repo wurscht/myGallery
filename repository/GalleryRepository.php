@@ -13,9 +13,9 @@ class GalleryRepository extends Repository {
     $statement = ConnectionHandler::getConnection()->prepare($query);
     $statement->bind_param('ss', $name, $description);
     
-    if (!statement->execute()) {
+   /* if (!statement->execute()) {
       throw new Exception($statement->error);
-    }
+    } */
     
     return $statement->insert_id;
   }

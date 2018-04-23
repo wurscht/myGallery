@@ -12,28 +12,22 @@
     <title><?= $title ?></title>
   </head>
   <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand">My Gallery</a>
+          <a class="navbar-brand text-light" href="<?php $GLOBALS['appurl']?>">My Gallery</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
+          <ul class="navbar-nav mr-auto">
 			<!-- fix schf -->
             <?php
             if (isset($_SESSION['userId']) == 0) {
-              echo "<li><a href='$GLOBALS[appurl]/login'>Login</a></li>";
-              echo "<li><a href='$GLOBALS[appurl]/login/registration'>Registration</a></li>";
+              echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/login'>Login</a></li>";
+              echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/login/registration'>Registration</a></li>";
             } else {
-              echo "<li><a href='$GLOBALS[appurl]/gallery'>My Galleries</a></li>";
-              echo "<li><a href='$GLOBALS[appurl]/user/edit'>Edit Account</a></li>";
-              echo "<li><a href='$GLOBALS[appurl]/login/logout'>Logout</a></li>";
+              echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/gallery'>My Galleries</a></li>";
+              echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/user/edit'>Edit Account</a></li>";
+              echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/login/logout'>Logout</a></li>";
             }
             ?>
           </ul>

@@ -1,5 +1,7 @@
 <?php
 
+require_once '../repository/GalleryRepository.php';
+
 class GalleryController {
   
   public function index() {
