@@ -1,17 +1,22 @@
 <?php
 
 require_once '../repository/GalleryRepository.php';
+require_once '../repository/PictureRepository.php';
+
 
 class GalleryController {
   
   public function index() {
       
     $galleryRepository = new GalleryRepository();
+    $pictureRepository = new PictureRepository();
     
     $view = new View('gallery_index');
     $view->title = 'My Galleries';
     $view->heading = 'My Galleries';
     $view->galleries = $galleryRepository->readAll();
+    $view->pictures = $pictureRepository->readAll();
+    
     $view->display();
   }
   
