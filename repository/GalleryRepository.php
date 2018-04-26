@@ -6,14 +6,15 @@ class GalleryRepository extends Repository {
   
   protected $tableName = 'gallery';
   
-  public function create($name, $description) {
+  public function create($name, $description, $uid) {
     
-    $query = "INSERT INTO $this->tableName (name, description) VALUES (?,?)";
+    $query = "INSERT INTO $this->tableName (name, description, uid) VALUES (?,?,?)";
     
     $statement = ConnectionHandler::getConnection()->prepare($query);
-    $statement->bind_param('ss', $name, $description);
+    $statement->bind_param('ssi', $name, $description, $uid);
+    $statement->execute();
     
-   /* if (!statement->execute()) {
+    /*if (!statement->execute()) {
       throw new Exception($statement->error);
     } */
     

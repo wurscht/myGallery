@@ -17,6 +17,3 @@
   echo $button->end();
   echo $form->end();
 ?>
-
- 
-

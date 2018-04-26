@@ -2,6 +2,7 @@
 
 require_once '../repository/GalleryRepository.php';
 require_once '../repository/PictureRepository.php';
+require_once '../repository/UserRepository.php';
 
 
 class GalleryController {
@@ -22,17 +23,26 @@ class GalleryController {
   
   public function create() {
     
+    $userRepository = new UserRepository();
+    
+    $id = $_SESSION['userId'];
+    if(!$id){
+      echo "User has no id!";
+    }
+    
     $view = new View('gallery_create');
     $view->title = 'Create gallery';
     $view->heading = 'Create gallery';
+    $view->user = $userRepository->readById($id);
     $view->display();
   }
   
   public function doCreate() {
     
     if ($_POST['send']) {
-      $name = htmlspecialchars($_POST['name']);
-      $description = htmlspecialchars($_POST['description']);
+      $name = htmlspecialchars($_POST['gallery_name']);
+      $description = htmlspecialchars($_POST['gallery_description']);
+      $uid = $_SESSION['userId'];
       
       if ($this->nameError()) {
         
@@ -40,9 +50,9 @@ class GalleryController {
         
       } else {
         $galleryRepository = new GalleryRepository();
-        $galleryRepository->create($name, $description);
+        $galleryRepository->create($name, $description, $uid);
         
-        header('Location: /gallery');
+        header('Location:'. $GLOBALS['appurl'] . '/gallery');
       }
     }
   }
@@ -92,7 +102,7 @@ class GalleryController {
   
   public function nameError() {
     
-    if (strlen($_POST['title']) > 60 || strlen($_POST['title']) < 3) {
+    if (strlen($_POST['gallery_name']) > 60 || strlen($_POST['gallery_name']) < 3) {
       $view = new view('gallery_name_error');
       $view->title = 'Name error';
       $view->heading = 'Name error';
@@ -103,7 +113,7 @@ class GalleryController {
   
   public function descriptionError() {
     
-    if (strlen($_POST['description']) > 300 || strlen($_POST['description']) < 3) {
+    if (strlen($_POST['gallery_description']) > 300 || strlen($_POST['gallery_description']) < 3) {
       $view = new view('gallery_description_error');
       $view->title = 'Description error';
       $view->heading = 'Description error';
