@@ -35,4 +35,23 @@ class GalleryRepository extends Repository {
         }
         return $statement->insert_id;    
     }
+  
+  public function getGalleryId($name, $uid) {
+    
+    $query = "SELECT uid FROM $this->tableName WHERE name = ? AND uid = ?";
+    
+    $statement = ConnectionHandler::getConnection()->prepare($query);
+    $statement->bind_param('si', $name, $uid);
+    $statement->execute();
+    
+    if (!$statement->execute()) {
+        throw new Exception($statement->error);
+      }
+    
+    $result = $statement->get_result();
+      $row = $result->fetch_object();
+      
+      return $row->gid;
+    
+  }
 }
