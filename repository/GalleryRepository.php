@@ -21,14 +21,14 @@ class GalleryRepository extends Repository {
     return $statement->insert_id;
   }
   
-  public function edit($id, $name, $description)
+  public function edit($gid, $name, $description)
     {
-        $query = "UPDATE $this->tableName SET name = ?, description = ? WHERE id = ?";
+        $query = "UPDATE $this->tableName SET name = ?, description = ? WHERE gid = ?";
             
         $statement = ConnectionHandler::getConnection()->prepare($query);
         if($statement === false)
             echo ConnectionHandler::getConnection()->error;
-        $statement->bind_param('ssi', $name, $description, $id);
+        $statement->bind_param('ssi', $name, $description, $gid);
         
         if (!$statement->execute()) {
             throw new Exception($statement->error);
@@ -51,7 +51,7 @@ class GalleryRepository extends Repository {
     $result = $statement->get_result();
       $row = $result->fetch_object();
       
-      return $row->gid;
+      return $row->uid;
     
   }
 }

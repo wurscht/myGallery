@@ -21,22 +21,24 @@ class GalleryController {
     $view->display();
   }
   
-  public function show() {
+  /*public function show() {
     
     $galleryRepository = new GalleryRepository();
-    $galleryId = $galleryRepository->getGalleryId()
+    
     
     $id = $_SESSION['galleryId'];
     if(!$id){
       echo "User has no id!";
     }
+      
+    $galleryId = $galleryRepository->getGalleryId($id);
     
     
     $view = new View('gallery_show');
     $view->title = $gallery['name'];
     $view->heading = $gallery['name'];
     $view->gallery = $galleryRepository->readById($id);
-  }
+  } */
   
   public function create() {
     
@@ -85,16 +87,27 @@ class GalleryController {
   public function edit() {
     
     $galleryRepository = new GalleryRepository();
+    $userRepository = new UserRepository();
+      
+    $galleryId = $galleryRepository->getGalleryId("Test gallery", 15);
+      
+    $_SESSION['galleryId'] = $galleryId;
         
-    $id = $_GET['id'];
-    if(!$id){
+    $galleryId = $_SESSION['galleryId'];
+    if(!$galleryId){
         echo "Gallery has no id!";
+    }
+      
+    $userId = $_SESSION['userId'];
+    if(!$userId){
+      echo "User has no id!";
     }
         
     $view = new View('gallery_edit');
     $view->title = 'Edit gallery';
     $view->heading = 'Edit gallery';
-    $view->task = $galleryRepository->readById($id);
+    $view->user = $userRepository->readById($userId);
+    $view->gallery = $galleryRepository->readById($galleryId);
     $view->display();
   }
   
@@ -102,18 +115,12 @@ class GalleryController {
     
     if ($_POST['send']) {
       $id = htmlspecialchars($_POST['id']);
-      $name = htmlspecialchars($_POST['name']);
-      $description = htmlspecialchars($_POST['description']);
-      if ($this->titleError()) {
-          
-      } else if ($this->descriptionError()) {
-            
-      } else {
-        $galleryRepository = new GalleryRepository();
-        $galleryRepository->edit($id, $name, $description);
-        header("Location: /gallery");
-        exit;
-      }
+      $name = htmlspecialchars($_POST['gallery_name']);
+      $description = htmlspecialchars($_POST['gallery_description']);
+      $galleryRepository = new GalleryRepository();
+      $galleryRepository->edit($id, $name, $description);
+      header("Location: /gallery");
+      exit;
     }
   }
   
