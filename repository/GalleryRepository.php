@@ -36,7 +36,7 @@ class GalleryRepository extends Repository {
         return $statement->insert_id;    
     }
   
-  public function getGalleryId($name, $uid) {
+  /*public function getGalleryId($name, $uid) {
     
     $query = "SELECT uid FROM $this->tableName WHERE name = ? AND uid = ?";
     
@@ -53,5 +53,5 @@ class GalleryRepository extends Repository {
       
       return $row->gid;
     
-  }
+  }*/
 }

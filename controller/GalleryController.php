@@ -21,21 +21,22 @@ class GalleryController {
     $view->display();
   }
   
-  public function show() {
+  public function show($galleryId) {
     
     $galleryRepository = new GalleryRepository();
-    $galleryId = $galleryRepository->getGalleryId()
     
-    $id = $_SESSION['galleryId'];
-    if(!$id){
-      echo "User has no id!";
+    $gid = $galleryId;
+    if(!$gid){
+      echo "Gallery has no id!";
     }
     
     
     $view = new View('gallery_show');
-    $view->title = $gallery['name'];
-    $view->heading = $gallery['name'];
-    $view->gallery = $galleryRepository->readById($id);
+    $view->title = "Gallery detail";
+    $view->heading = "Gallery detail";
+    $view->gallery = $galleryRepository->readById($gid);
+    
+    $view->display();
   }
   
   public function create() {

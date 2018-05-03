@@ -7,7 +7,7 @@
     <?php else: ?>
       <?php foreach ($galleries as $gallery): ?>
         <?php if ($gallery->uid == $_SESSION['userId']): ?>
-          <a href=$gallery['gid']>
+          <a href="<?php echo $GLOBALS['appurl'] . "/gallery/show/" . $gallery->gid; ?>">
             <div class="card mr-2 ml-2 mb-2 card-block" style="width: 18rem;">
               <?php foreach ($pictures as $picture): ?>
                 <?php if ($gallery->gid == $picture->gid): ?>

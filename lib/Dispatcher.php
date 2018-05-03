@@ -50,6 +50,12 @@
       if (!empty($uriFragments[1])) {
         $method = $uriFragments[1];
       }
+      
+      // ID ermitteln (Gallery-ID, Picture-ID)
+      $id ='';
+      if (!empty($uriFragments[2])) {
+        $id = $uriFragments[2];
+      }
 
       $args = array_slice($uriFragments, 2);
 
@@ -60,7 +66,8 @@
       // Eine neue Instanz des Controllers wird erstellt und die gewünschte
       //   Methode darauf aufgerufen.
       $controller = new $controllerName();
-      $controller->$method();
+      if (strlen($id) > 0) $controller->$method($id);
+      else $controller->$method();
     }
 }
 ?>
