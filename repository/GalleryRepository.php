@@ -14,10 +14,6 @@ class GalleryRepository extends Repository {
     $statement->bind_param('ssi', $name, $description, $uid);
     $statement->execute();
     
-    /*if (!statement->execute()) {
-      throw new Exception($statement->error);
-    } */
-    
     return $statement->insert_id;
   }
   
@@ -36,22 +32,32 @@ class GalleryRepository extends Repository {
         return $statement->insert_id;    
     }
   
-  /*public function getGalleryId($name, $uid) {
-    
-    $query = "SELECT uid FROM $this->tableName WHERE name = ? AND uid = ?";
-    
-    $statement = ConnectionHandler::getConnection()->prepare($query);
-    $statement->bind_param('si', $name, $uid);
-    $statement->execute();
-    
-    if (!$statement->execute()) {
+  public function readById($id)
+    {
+      // Query erstellen
+      $query = "SELECT * FROM {$this->tableName} WHERE gid=?";
+  
+      // Datenbankverbindung anfordern und, das Query "preparen" (vorbereiten)
+      // und die Parameter "binden"
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->bind_param('i', $id);
+  
+      // Das Statement absetzen
+      $statement->execute();
+  
+      // Resultat der Abfrage holen
+      $result = $statement->get_result();
+      if (!$result) {
         throw new Exception($statement->error);
       }
-    
-    $result = $statement->get_result();
+  
+      // Ersten Datensatz aus dem Reultat holen
       $row = $result->fetch_object();
-      
-      return $row->uid;
-    
-  }*/
+  
+      // Datenbankressourcen wieder freigeben
+      $result->close();
+  
+      // Den gefundenen Datensatz zurückgeben
+      return $row;
+    }
 }

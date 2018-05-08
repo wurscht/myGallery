@@ -1,3 +1,11 @@
 .card-block {
   color: black;
 }
+
+.thumb {
+  object-fit: none;
+  object-position: center;
+  width: 10%;
+  max-height: 200px;
+  margin-bottom: 1rem;
+}

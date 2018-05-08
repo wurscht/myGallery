@@ -21,39 +21,25 @@ class GalleryController {
     $view->display();
   }
   
-<<<<<<< HEAD
+
   public function show($galleryId) {
     
     $galleryRepository = new GalleryRepository();
-=======
-  /*public function show() {
-    
-    $galleryRepository = new GalleryRepository();
-    
->>>>>>> 8ad8515f4adab48c4618cc8a86ce7df9c4ca5072
+    $pictureRepository = new PictureRepository();
     
     $gid = $galleryId;
     if(!$gid){
       echo "Gallery has no id!";
     }
-      
-    $galleryId = $galleryRepository->getGalleryId($id);
-    
     
     $view = new View('gallery_show');
-<<<<<<< HEAD
     $view->title = "Gallery detail";
     $view->heading = "Gallery detail";
+    $view->pictures = $pictureRepository->readAll();
     $view->gallery = $galleryRepository->readById($gid);
     
     $view->display();
   }
-=======
-    $view->title = $gallery['name'];
-    $view->heading = $gallery['name'];
-    $view->gallery = $galleryRepository->readById($id);
-  } */
->>>>>>> 8ad8515f4adab48c4618cc8a86ce7df9c4ca5072
   
   public function create() {
     
