@@ -27,18 +27,28 @@
 		  </div>
 		</div>
         <div class="form-group">
-            <label class="col-md-2 control-label" for="isAdmin">is admin</label>
-		    <div class="col-md-4">
-		  	   <input id="isAdmin" name="isAdmin" type="checkbox" class="input-xs" <?php if ($user->isAdmin == 1) { ?> checked="checked" <?php } ?>>
-		    </div>
+          <label class="col-md-1 control-label" for="isAdmin">is admin</label>
+		  <input id="isAdmin" name="isAdmin" type="checkbox" class="input-xs" <?php if ($user->isAdmin == 1) { ?> checked="checked" <?php } ?>>
         </div>
         <?php endif ?>
-        
-		<div class="form-group">
-	      <label class="col-md-2 control-label" for="send">&nbsp;</label>
-		  <div class="col-md-4">
+      
+        <div class="form-group d-flex justify-content-start">
+		  <div class="col-md-1">
 		    <input id="send" name="send" type="submit" class="btn btn-primary" value="send" >
 		  </div>
+          <div class="col-md-4">
+            <a name="delete" class="btn btn-danger" href="<?php echo $GLOBALS['appurl'] . "/user/delete/" . $_SESSION['userId']; ?>" >Delete</a>
+		  </div>
 		</div>
+      
+        <?php if ($user->isAdmin == true): ?>
+          <h3>Edit other users</h3>
+          <?php foreach ($readAllExceptMyself as $nonadmins): ?>
+            <p><?php echo $nonadmins->username; ?></p>
+      
+          <?php endforeach ?>
+        <?php endif ?>
+      
+		
 	</div>
 </form>

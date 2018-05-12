@@ -99,5 +99,39 @@ require_once '../lib/Repository.php';
       
       return false;
     }
+    
+    public function deleteById($uid) {
+      
+      $query = "DELETE FROM $this->tableName WHERE uid = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->bind_param('i', $uid);
+  
+      if (!$statement->execute()) {
+        throw new Exception($statement->error);
+      }
+    }
+    
+    public function readAllExceptMyself($uid) {
+      
+      $query = "SELECT * FROM {$this->tableName} WHERE NOT uid = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->bind_param('i', $uid);
+      $statement->execute();
+      
+      $result = $statement->get_result();
+      if (!$result) {
+        throw new Exception($statement->error);
+      }
+      
+      // Datensätze aus dem Resultat holen und in das Array $rows speichern
+      $rows = array();
+      while ($row = $result->fetch_object()) {
+  		$rows[] = $row;
+      }
+      return $rows;
+    }
+    
   }
 ?>

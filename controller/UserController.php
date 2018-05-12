@@ -29,6 +29,7 @@ require_once '../repository/UserRepository.php';
       $view->heading = 'Edit user informations';
       $view->user = $userRepository->readById($id);
       $view->users = $userRepository->readAll();
+      $view->readAllExceptMyself = $userRepository->readAllExceptMyself($id);
       $view->display();
     }
   
@@ -54,15 +55,21 @@ require_once '../repository/UserRepository.php';
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           $_SESSION['error'] = "Invalid email format!";
           header('Location:'. $GLOBALS['appurl'] . '/user/edit');
-        /*} else if (!$userRepository->checkEmail($email)) {
-          $_SESSION['error'] = "This Email is already used!";
-          header('Location:'. $GLOBALS['appurl'] . '/user/edit');*/
         } else {
           $_SESSION['success'] = "Your changes were made";
           $userRepository->edit($id, $username, $email, $password, $isAdmin);
           header('Location:'. $GLOBALS['appurl'] . '/user/edit');
         }
       }
+    }
+    
+    public function delete($uid) {
+      
+      $userRepository = new UserRepository();
+      $userRepository->deleteById($uid);
+      session_destroy();
+      
+      header('Location:'. $GLOBALS['appurl'] . '/login');
     }
   }
 ?>

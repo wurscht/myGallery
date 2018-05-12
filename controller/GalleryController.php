@@ -77,25 +77,20 @@ class GalleryController {
     }
   }
   
-  public function delete() {
+  public function delete($gid) {
     
     $galleryRepository = new GalleryRepository();
-    $galleryRepository->deleteById($_GET['id']);
+    $galleryRepository->deleteById($gid);
     // Anfrage an die URI /task weiterleiten (HTTP 302)
-    header('Location: /gallery');
+    header('Location:'. $GLOBALS['appurl'] .  '/gallery');
   }
   
-  public function edit() {
+  public function edit($gid) {
     
     $galleryRepository = new GalleryRepository();
     $userRepository = new UserRepository();
       
-    $galleryId = $galleryRepository->getGalleryId("Test gallery", 15);
-      
-    $_SESSION['galleryId'] = $galleryId;
-        
-    $galleryId = $_SESSION['galleryId'];
-    if(!$galleryId){
+    if(!$gid){
         echo "Gallery has no id!";
     }
       
@@ -108,19 +103,21 @@ class GalleryController {
     $view->title = 'Edit gallery';
     $view->heading = 'Edit gallery';
     $view->user = $userRepository->readById($userId);
-    $view->gallery = $galleryRepository->readById($galleryId);
+    $view->gallery = $galleryRepository->readById($gid);
     $view->display();
   }
   
   public function doEdit() {
     
     if ($_POST['send']) {
-      $id = htmlspecialchars($_POST['id']);
+      $galleryRepository = new GalleryRepository();
+      $gid = htmlspecialchars($_POST['id']);
       $name = htmlspecialchars($_POST['gallery_name']);
       $description = htmlspecialchars($_POST['gallery_description']);
-      $galleryRepository = new GalleryRepository();
-      $galleryRepository->edit($id, $name, $description);
-      header("Location: /gallery");
+      $view->gallery = $galleryRepository->readById($gid);
+      $galleryRepository->edit($gid, $name, $description);
+      
+      header('Location:'. $GLOBALS['appurl'] . '/gallery');
       exit;
     }
   }

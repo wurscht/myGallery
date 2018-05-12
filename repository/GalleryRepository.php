@@ -32,7 +32,7 @@ class GalleryRepository extends Repository {
         return $statement->insert_id;    
     }
   
-  public function readById($id)
+  public function readById($gid)
     {
       // Query erstellen
       $query = "SELECT * FROM {$this->tableName} WHERE gid=?";
@@ -40,7 +40,7 @@ class GalleryRepository extends Repository {
       // Datenbankverbindung anfordern und, das Query "preparen" (vorbereiten)
       // und die Parameter "binden"
       $statement = ConnectionHandler::getConnection()->prepare($query);
-      $statement->bind_param('i', $id);
+      $statement->bind_param('i', $gid);
   
       // Das Statement absetzen
       $statement->execute();
@@ -59,5 +59,17 @@ class GalleryRepository extends Repository {
   
       // Den gefundenen Datensatz zurückgeben
       return $row;
+    }
+  
+  public function deleteById($gid) {
+      
+      $query = "DELETE FROM $this->tableName WHERE gid = ?";
+      
+      $statement = ConnectionHandler::getConnection()->prepare($query);
+      $statement->bind_param('i', $gid);
+  
+      if (!$statement->execute()) {
+        throw new Exception($statement->error);
+      }
     }
 }
