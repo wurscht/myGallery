@@ -1,4 +1,4 @@
-<form class="form-horizontal" action="<?php echo $GLOBALS['appurl'] . "/gallery/doEdit" ?>" method="post">
+<form class="form-horizontal" action="<?php echo $GLOBALS['appurl'] . "/gallery/doEdit" ?>" enctype="multipart/form-data" method="post">
 	<input type="hidden" name="id" value="<?php echo $gallery->gid; ?>">
     <div class="component" data-html="true">
         <?php if ($_SESSION['userId'] == $user->uid): ?>
@@ -13,9 +13,15 @@
 		<div class="form-group">
 		  <label class="col-md-2 control-label" for="description">Description</label>
 		  <div class="col-md-4">
-            <?php if ($_SESSION['userId'] == $user->uid): ?>
-		  	   <input id="gallery_description" name="gallery_description" value="<?php echo $gallery->description ?>" required="required" type="text" class="form-control input-md">
-            <?php endif ?>
+		    <input id="gallery_description" name="gallery_description" value="<?php echo $gallery->description ?>" required="required" type="text" class="form-control input-md">
+		  </div>
+		</div>
+        <div class="form-group">
+		  <div class="col-md-4">
+            <div class="custom-file" required>  
+		      <input id="gallery_picture" name="gallery_picture" value="<?php echo $gallery->description ?>" required="required" type="file" class="custom-file-input" required>
+              <label class="custom-file-label" for="gallery_picture">Choose picture...</label>
+            </div>
 		  </div>
 		</div>
         
