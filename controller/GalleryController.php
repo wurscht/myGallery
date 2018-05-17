@@ -59,22 +59,36 @@ class GalleryController {
   
   public function doCreate() {
     
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["gallery_picture"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+    
     if ($_POST['send']) {
       $name = htmlspecialchars($_POST['gallery_name']);
       $description = htmlspecialchars($_POST['gallery_description']);
       $uid = $_SESSION['userId'];
-      
-      if ($this->nameError()) {
-        
-      } else if ($this->descriptionError()) {
-        
+      $picture_name = htmlspecialchars($_POST['picture_name']);
+      $check = getimagesize($_FILES["gallery_picture"]["tmp_name"]);
+  
+      if($check !== false) {
+        $_SESSION['success'] = "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
       } else {
-        $galleryRepository = new GalleryRepository();
-        $galleryRepository->create($name, $description, $uid);
-        
-        header('Location:'. $GLOBALS['appurl'] . '/gallery');
+        $_SESSION['error'] = "File is not an image.";
+        $uploadOk = 0;
       }
+      
+      $galleryRepository = new GalleryRepository();
+      $pictureRepository = new PictureRepository();
+      $galleryRepository->create($name, $description, $uid);
+      $gid = $galleryRepository->getGalleryId();
+      $pictureRepository->create($picture_name, $target_file, $gid);
+      
+        
+      header('Location:'. $GLOBALS['appurl'] . '/gallery');
     }
+    
   }
   
   public function delete($gid) {

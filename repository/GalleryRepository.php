@@ -72,4 +72,28 @@ class GalleryRepository extends Repository {
         throw new Exception($statement->error);
       }
     }
+  
+  public function getGalleryId() {
+    
+    $query = "SELECT max(gid) AS 'maxId' FROM $this->tableName";
+    
+    $statement = ConnectionHandler::getConnection()->prepare($query);
+    
+    $statement->execute();
+  
+    // Resultat der Abfrage holen
+    $result = $statement->get_result();
+    if (!$result) {
+      throw new Exception($statement->error);
+    }
+  
+    // Ersten Datensatz aus dem Reultat holen
+    $row = $result->fetch_object();
+  
+    // Datenbankressourcen wieder freigeben
+    $result->close();
+  
+    // Den gefundenen Datensatz zurückgeben
+    return $row->maxId;
+  }
 }

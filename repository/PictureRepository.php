@@ -23,4 +23,15 @@ class PictureRepository extends Repository {
       
     return $row->uid; 
   }
+  
+  public function create($name, $path, $gid) {
+    
+    $query = "INSERT INTO $this->tableName (name, path, gid) VALUES (?,?,?)";
+    
+    $statement = ConnectionHandler::getConnection()->prepare($query);
+    $statement->bind_param('ssi', $name, $path, $gid);
+    $statement->execute();
+    
+    return $statement->insert_id;
+  }
 }
