@@ -59,12 +59,14 @@ class GalleryController {
   
   public function doCreate() {
     
+    $galleryRepository = new GalleryRepository();
+    $pictureRepository = new PictureRepository();
     $target_dir = "uploads/";
     $target_file = $target_dir . basename($_FILES["gallery_picture"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     
-    if ($_POST['send']) {
+    if (isset($_POST['send'])) {
       $name = htmlspecialchars($_POST['gallery_name']);
       $description = htmlspecialchars($_POST['gallery_description']);
       $uid = $_SESSION['userId'];
@@ -72,19 +74,34 @@ class GalleryController {
       $check = getimagesize($_FILES["gallery_picture"]["tmp_name"]);
   
       if($check !== false) {
-        $_SESSION['success'] = "File is an image - " . $check["mime"] . ".";
         $uploadOk = 1;
       } else {
         $_SESSION['error'] = "File is not an image.";
         $uploadOk = 0;
       }
-      
-      $galleryRepository = new GalleryRepository();
-      $pictureRepository = new PictureRepository();
-      $galleryRepository->create($name, $description, $uid);
-      $gid = $galleryRepository->getGalleryId();
-      $pictureRepository->create($picture_name, $target_file, $gid);
-      
+        
+      if ($_FILES['gallery_picture']["size"] > 4000000) {
+          $_SESSION['error'] = "Sorry, your file is too large.";
+          $uploadOk = 0;
+      }
+    
+      if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+          $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+          $uploadOk = 0;
+      }
+        
+      if ($uploadOk == 0) {
+          echo "Sorry, your file was not uploaded.";
+      } else {
+          if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
+              $galleryRepository->create($name, $description, $uid);
+              $gid = $galleryRepository->getGalleryId();
+              $pictureRepository->create($picture_name, $target_file, $gid);
+              $_SESSION['success'] = "Gallery has been created and Image has been uploaded";
+          } else {
+              $_SESSION['error'] = "Sorry, there was an error uploading your file.";
+          }
+      }
         
       header('Location:'. $GLOBALS['appurl'] . '/gallery');
     }
@@ -122,17 +139,54 @@ class GalleryController {
   }
   
   public function doEdit() {
+      
+    $galleryRepository = new GalleryRepository();
+    $pictureRepository = new PictureRepository();
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($_FILES["gallery_picture"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     
-    if ($_POST['send']) {
-      $galleryRepository = new GalleryRepository();
+    if (isset($_POST['send'])) {
       $gid = htmlspecialchars($_POST['id']);
       $name = htmlspecialchars($_POST['gallery_name']);
       $description = htmlspecialchars($_POST['gallery_description']);
       $view->gallery = $galleryRepository->readById($gid);
       $galleryRepository->edit($gid, $name, $description);
+      $uid = $_SESSION['userId'];
+      $picture_name = htmlspecialchars($_POST['picture_name']);
+      $check = getimagesize($_FILES["gallery_picture"]["tmp_name"]);
       
+      if($check !== false) {
+        $uploadOk = 1;
+      } else {
+        $_SESSION['error'] = "File is not an image.";
+        $uploadOk = 0;
+      }
+        
+      if ($_FILES['gallery_picture']["size"] > 4000000) {
+          $_SESSION['error'] = "Sorry, your file is too large.";
+          $uploadOk = 0;
+      }
+    
+      if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+          $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+          $uploadOk = 0;
+      }
+        
+      if ($uploadOk == 0) {
+          echo "Sorry, your file was not uploaded.";
+      } else {
+          if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
+              $galleryRepository->edit($gid, $name, $description);
+              $pictureRepository->create($picture_name, $target_file, $gid);
+              $_SESSION['success'] = "Gallery has been created and Image has been uploaded";
+          } else {
+              $_SESSION['error'] = "Sorry, there was an error uploading your file.";
+          }
+      }
+        
       header('Location:'. $GLOBALS['appurl'] . '/gallery');
-      exit;
     }
   }
   

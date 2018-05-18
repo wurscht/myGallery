@@ -16,6 +16,15 @@
 		    <input id="gallery_description" name="gallery_description" value="<?php echo $gallery->description ?>" required="required" type="text" class="form-control input-md">
 		  </div>
 		</div>
+        <h3>Upload picture</h3>
+        <div class="form-group">
+		  <label class="col-md-2 control-label" for="picture_name">Picture name</label>
+		  <div class="col-md-4">
+            <?php if ($_SESSION['userId'] == $user->uid): ?>
+		  	   <input id="picture_name" name="picture_name" required="required" type="text" class="form-control input-md">
+            <?php endif ?>
+		  </div>
+		</div>
         <div class="form-group">
 		  <div class="col-md-4">
             <div class="custom-file" required>  
