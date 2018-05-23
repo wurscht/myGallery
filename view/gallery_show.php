@@ -4,7 +4,7 @@
 </a>
   <?php foreach ($pictures as $picture): ?>  
     <?php if ($gallery->gid == $picture->gid): ?>
-      <img class="card-img-top" src='<?php echo $picture->path ?>' alt="Preview picture">
+      <img class="thumb" src='/myGallery/public/<?php echo $picture->thumb_path ?>' alt="Preview picture">
     <?php endif ?>
   <?php endforeach ?>
 <?php endif ?>

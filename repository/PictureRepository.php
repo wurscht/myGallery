@@ -24,12 +24,12 @@ class PictureRepository extends Repository {
     return $row->uid; 
   }
   
-  public function create($name, $path, $gid) {
+  public function create($name, $path, $thumb_path, $gid) {
     
-    $query = "INSERT INTO $this->tableName (name, path, gid) VALUES (?,?,?)";
+    $query = "INSERT INTO $this->tableName (name, path, thumb_path, gid) VALUES (?,?,?,?)";
     
     $statement = ConnectionHandler::getConnection()->prepare($query);
-    $statement->bind_param('ssi', $name, $path, $gid);
+    $statement->bind_param('sssi', $name, $path, $thumb_path, $gid);
     $statement->execute();
     
     return $statement->insert_id;
