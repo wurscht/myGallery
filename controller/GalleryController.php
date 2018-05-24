@@ -68,7 +68,9 @@ class GalleryController {
     $thumbnail_file = $target_dir_thumbs . basename($_FILES["gallery_picture"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-      
+    
+    //Berechnungen für Thumbnail erstellen
+    
     $new_w = 120;
     $new_h = 120;
     
@@ -95,10 +97,9 @@ class GalleryController {
         $src_y = 0;
     }
       
-    $dest_img = imagecreatetruecolor($new_w, $new_h);
-    imagecopyresampled($dest_img, $src_file, 0, 0, $src_x, $src_y, $crop_w, $crop_h, $orig_w, $orig_h);
-      
-    imagejpeg($dest_img, $thumbnail_file);
+    $dest_img = imagecreatetruecolor($new_w, $new_h); // Gibt eine Bildresource zurück
+    imagecopyresampled($dest_img, $src_file, 0, 0, $src_x, $src_y, $crop_w, $crop_h, $orig_w, $orig_h); // Kopiert Bild in Bild Ressource 
+    imagejpeg($dest_img, $thumbnail_file); // Erstellt JPG und legt es im Pfad ab
     
     if (isset($_POST['send'])) {
       $name = htmlspecialchars($_POST['gallery_name']);
