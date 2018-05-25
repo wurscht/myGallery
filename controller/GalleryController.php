@@ -61,11 +61,11 @@ class GalleryController {
     
     $galleryRepository = new GalleryRepository();
     $pictureRepository = new PictureRepository();
-    $target_dir = "uploads/";
-    $target_dir_thumbs = "uploads/thumbs/";
+    $target_dir = 'uploads/';
+    $target_dir_thumbs = 'uploads/thumbs/';
     $target_file = $target_dir . basename($_FILES["gallery_picture"]["name"]);
-    $src_file = @imagecreatefromjpeg($_FILES["gallery_picture"]["tmp-name"]);
     $thumbnail_file = $target_dir_thumbs . basename($_FILES["gallery_picture"]["name"]);
+    $src_file = imagecreatefromjpeg($target_file);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     
