@@ -2,14 +2,6 @@
   color: black;
 }
 
-.thumb {
-  object-fit: none;
-  object-position: center;
-  width: 10%;
-  max-height: 200px;
-  margin-bottom: 1rem;
-}
-
 .preview_picture {
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -21,4 +13,8 @@ footer {
   position: absolute;
   bottom: 0;
   line-height: 60px;
+}
+
+.link {
+  text-decoration: none !important;
 }

@@ -8,13 +8,11 @@
       <?php foreach ($galleries as $gallery): ?>
         <?php $count = 0; ?>
         <?php if ($gallery->uid == $_SESSION['userId']): ?>
-          
+          <a class="link" href="<?php echo $GLOBALS['appurl'] . "/gallery/show/" . $gallery->gid; ?>">
             <div class="card mr-2 ml-2 mb-2 card-block" style="width: 18rem;">
               <?php foreach ($pictures as $picture): ?>
                 <?php if ($gallery->gid == $picture->gid and $count < 1): ?>
-                  <a href="<?php echo $GLOBALS['appurl'] . "/gallery/show/" . $gallery->gid; ?>">
-                  <img class="card-img-top preview_picture" src='<?php echo $picture->path ?>' alt="Preview picture">
-                  </a>
+                  <img class="card-img-top preview_picture" src='<?php echo $picture->thumb_path ?>' alt="Preview picture">
                   <?php $count++; ?>
                 <?php endif ?>
               <?php endforeach ?>
@@ -23,7 +21,7 @@
                 <p class="card-text"><?php echo $gallery->description ?></p>
               </div>
             </div>  
-          
+          </a>
         <?php endif ?>
       <?php endforeach ?>
     <?php endif ?>

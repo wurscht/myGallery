@@ -7,7 +7,7 @@
     <?php if ($gallery->gid == $picture->gid): ?>
       <div class="row">
         <div class="column">
-          <img class="thumb hover-shadow" src='/myGallery/public/<?php echo $picture->thumb_path ?>' alt="Preview picture" onclick="openModal();currentSlide(<?php echo $counter ?>)">
+          <img class="img-thumbnail" src='/myGallery/public/<?php echo $picture->thumb_path ?>' alt="Preview picture" onclick="openModal();currentSlide(<?php echo $counter ?>)">
         </div>
       </div>
       <div id="myModal" class="modal">

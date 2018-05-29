@@ -1,4 +1,7 @@
-      <?php
+      
+      <footer>
+        <p>&copy; Copyright Jonas Lehmann</p>
+        <?php
         if (isset($_SESSION['error'])) {
           echo "<div class='alert alert-danger'>$_SESSION[error]</div>";
           unset($_SESSION['error']);
@@ -7,9 +10,7 @@
           echo "<div class='alert alert-success'>$_SESSION[success]</div>";
           unset($_SESSION['success']);
         }
-      ?>
-      <footer>
-        <p>&copy; Copyright Jonas Lehmann</p>
+        ?>
       </footer>
     </div>
     <script src="<?=$GLOBALS['appurl']?>/js/jquery.min.js"></script>
