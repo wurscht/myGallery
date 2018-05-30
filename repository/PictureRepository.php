@@ -34,4 +34,52 @@ class PictureRepository extends Repository {
     
     return $statement->insert_id;
   }
+    
+  public function deleteById($pid) {
+      
+    $query = "DELETE FROM {$this->tableName} WHERE pid=?";
+    $statement = ConnectionHandler::getConnection()->prepare($query);
+    $statement->bind_param('i', $pid);
+  
+    if (!$statement->execute()) {
+      throw new Exception($statement->error);
+    }
+  }
+    
+  public function readById($pid) {
+      // Query erstellen
+    $query = "SELECT * FROM {$this->tableName} WHERE pid=?";
+  
+    $statement = ConnectionHandler::getConnection()->prepare($query);
+    $statement->bind_param('i', $pid);
+  
+    $statement->execute();
+  
+    $result = $statement->get_result();
+    if (!$result) {
+      throw new Exception($statement->error);
+    }
+  
+    $row = $result->fetch_object();
+  
+    $result->close();
+  
+    return $row;
+  }
+    
+  public function edit($pid, $name) {
+      
+    $query = "UPDATE $this->tableName SET name = ? WHERE pid = ?";
+            
+    $statement = ConnectionHandler::getConnection()->prepare($query);
+    if($statement === false) {
+      echo ConnectionHandler::getConnection()->error;
+    }
+    $statement->bind_param('si', $name, $pid);
+        
+    if (!$statement->execute()) {
+      throw new Exception($statement->error);
+    }
+    return $statement->insert_id;    
+  }
 }
