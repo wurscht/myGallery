@@ -10,11 +10,15 @@
 }
 
 footer {
-  position: absolute;
   bottom: 0;
   line-height: 60px;
 }
 
 .link {
   text-decoration: none !important;
+}
+
+.edit-picture {
+  width: 100%;
+  margin: 0 0 10px 0;
 }

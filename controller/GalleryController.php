@@ -91,9 +91,9 @@ class GalleryController {
           $uploadOk = 0;
       }
         
-      if (file_exists($_FILES["gallery_picture"]["tmp_name"])) {
+      /*if (file_exists($_FILES["gallery_picture"]["tmp_name"])) {
           
-      }
+      }*/
         
       if ($uploadOk == 0) {
           echo "Sorry, your file was not uploaded.";
@@ -188,6 +188,7 @@ class GalleryController {
     $galleryRepository = new GalleryRepository();
     $pictureRepository = new PictureRepository();
     $target_dir = "uploads/";
+    $thumbs_dir = 'uploads/thumbs/';
     $target_file = $target_dir . basename($_FILES["gallery_picture"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -214,18 +215,58 @@ class GalleryController {
           $uploadOk = 0;
       }
     
-      if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+      if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
           $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
           $uploadOk = 0;
       }
         
       if ($uploadOk == 0) {
-          echo "Sorry, your file was not uploaded.";
+          echo "Sorry, your file was not edited.";
       } else {
           if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
               $galleryRepository->edit($gid, $name, $description);
-              $pictureRepository->create($picture_name, $target_file, $target_file, $gid);
+              $_FILES["gallery_picture"]["name"] = $picture_name . "." . $imageFileType;
+              $thumbnail_path = $thumbs_dir . basename($_FILES["gallery_picture"]["name"]);
+              $pictureRepository->create($picture_name, $target_file, $thumbnail_path, $gid);
               $_SESSION['success'] = "Gallery has been created and Image has been uploaded";
+              if ($_FILES["gallery_picture"]["type"] == "image/png") {
+                  $src_file = imagecreatefrompng($target_file);
+              } else if ($_FILES["gallery_picture"]["type"] == "image/jpg" || $_FILES["gallery_picture"]["type"] == "image/jpeg") {
+                  $src_file = imagecreatefromjpeg($target_file);
+              }
+            
+              //Berechnungen für Thumbnail erstellen
+              
+              $new_w = 288;
+              $new_h = 288;
+    
+              $orig_w = imagesx($src_file);
+              $orig_h = imagesy($src_file);
+      
+              $w_ratio = ($new_w / $orig_w);
+              $h_ratio = ($new_h / $orig_h);
+      
+              if ($orig_w > $orig_h) {
+                $crop_w = round($orig_w * $h_ratio);
+                $crop_h = $new_h;
+                $src_x = ceil(($orig_w - $orig_h) / 2);
+                $src_y = 0;
+              } else if ($orig_w < $orig_h) {
+                $crop_h = round($orig_h * $w_ratio);
+                $crop_w = $new_w;
+                $src_x = 0;
+                $src_y = ceil(($orig_h - $orig_w) / 2);
+              } else {
+                $crop_w = $new_w;
+                $crop_h = $new_h;
+                $src_x = 0;
+                $src_y = 0;
+              }
+      
+              $dest_img = imagecreatetruecolor($new_w, $new_h); // Gibt eine Bildresource zurück
+              imagecopyresampled($dest_img, $src_file, 0, 0, $src_x, $src_y, $crop_w, $crop_h, $orig_w, $orig_h); // Kopiert Bild in Bild Ressource 
+              imagejpeg($dest_img, $thumbnail_path); // Erstellt JPG und legt es im Pfad ab
+            
           } else {
               $_SESSION['error'] = "Sorry, there was an error uploading your file.";
           }

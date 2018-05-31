@@ -7,10 +7,15 @@ class PictureController {
     
     public function delete($pid) {
         
-        $pictureRepository = new PictureRepository();
-        $pictureRepository->deleteById($pid);
+      $pictureRepository = new PictureRepository();
+      $picture = $pictureRepository->readById($pid);
+      if (file_exists($picture->path) && file_exists($picture->thumb_path)) {
+        unlink($picture->path);
+        unlink($picture->thumb_path);
+      }
+      $pictureRepository->deleteById($pid);
         
-        header('Location:'. $GLOBALS['appurl'] . '/gallery');
+      header('Location:'. $GLOBALS['appurl'] . '/gallery');
     }
     
     public function edit($pid) {
