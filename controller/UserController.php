@@ -1,6 +1,8 @@
 <?php
 
 require_once '../repository/UserRepository.php';
+require_once '../repository/GalleryRepository.php';
+require_once '../repository/PictureRepository.php';
 
   class UserController {
     
@@ -66,6 +68,23 @@ require_once '../repository/UserRepository.php';
     public function delete($uid) {
       
       $userRepository = new UserRepository();
+    	$galleryRepository = new GalleryRepository();
+			$pictureRepository = new PictureRepository();
+				
+			$galleries = $galleryRepository->readAll();
+			$pictures = $pictureRepository->readAll();
+			
+			foreach($galleries as $gallery) {
+				if($gallery->uid == $uid) {
+					foreach($pictures as $picture) {
+						if ($picture->gid == $gallery->gid) {
+								unlink($picture->path);
+								unlink($picture->thumb_path);
+						}
+					}
+				}
+			}	
+        
       $userRepository->deleteById($uid);
       session_destroy();
       
