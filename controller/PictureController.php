@@ -5,37 +5,37 @@ require_once '../repository/UserRepository.php';
 
 class PictureController {
     
-    public function delete($pid) {
+  public function delete($pid) {
         
-      $pictureRepository = new PictureRepository();
-      $picture = $pictureRepository->readById($pid);
-      if (file_exists($picture->path) && file_exists($picture->thumb_path)) {
-        unlink($picture->path);
-        unlink($picture->thumb_path);
-      }
-      $pictureRepository->deleteById($pid);
-        
-      header('Location:'. $GLOBALS['appurl'] . '/gallery');
-    }
+    $pictureRepository = new PictureRepository();
+    $picture = $pictureRepository->readById($pid);
     
-    public function edit($pid) {
-        
-        $pictureRepository = new PictureRepository();
-        $userRepository = new UserRepository();
-        
-        $userId = $_SESSION['userId'];
-        
-        $view = new View('picture_edit');
-        $view->title = 'Edit picture';
-        $view->heading = 'Edit picture';
-        $view->user = $userRepository->readById($userId);
-        $view->picture = $pictureRepository->readById($pid);
-        $view->display();
+    if (file_exists($picture->path) && file_exists($picture->thumb_path)) {
+      unlink($picture->path);
+      unlink($picture->thumb_path);
     }
+    $pictureRepository->deleteById($pid);
+        
+    header('Location:'. $GLOBALS['appurl'] . '/gallery');
+  }
     
-    public function doEdit() {
+  public function edit($pid) {
+        
+    $pictureRepository = new PictureRepository();
+    $userRepository = new UserRepository();
       
-
+    $userId = $_SESSION['userId'];
+        
+    $view = new View('picture_edit');
+    $view->title = 'Edit picture';
+    $view->heading = 'Edit picture';
+    $view->user = $userRepository->readById($userId);
+    $view->picture = $pictureRepository->readById($pid);
+    $view->display();
+  }
+    
+  public function doEdit() {
+    
     $pictureRepository = new PictureRepository();
     
     if (isset($_POST['send'])) {
@@ -45,6 +45,6 @@ class PictureController {
       $pictureRepository->edit($pid, $name);    
 
       header('Location:'. $GLOBALS['appurl'] . '/gallery');
-      }
     }
+  }
 }

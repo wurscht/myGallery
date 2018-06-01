@@ -17,7 +17,7 @@
 		    <input id="send" name="send" type="submit" class="btn btn-primary" value="edit" >
 		  </div>
           <div class="col-md-4">
-            <a name="delete-picture" class="btn btn-danger" href="<?php echo $GLOBALS['appurl'] . "/picture/delete/" . $picture->pid . "/" . $picture->name; ?>">Bild löschen</a>
+            <a name="delete-picture" class="btn btn-danger" href="<?php echo $GLOBALS['appurl'] . "/picture/delete/" . $picture->pid . "/" . $picture->name; ?>">Delete picture</a>
 		  </div>
 		</div>
 	</div>
