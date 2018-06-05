@@ -64,6 +64,29 @@ require_once '../repository/PictureRepository.php';
         }
       }
     }
+		
+		public function doEditOtherUsers() {
+			if(isset($_POST['otherSend'])) {
+        $id = $_SESSION['otherUserId'];
+        $username = htmlspecialchars($_POST['otherUsername']);
+        $email = htmlspecialchars($_POST['otherEmail']);
+        $password = htmlspecialchars($_POST['otherPassword']);
+        $userRepository = new UserRepository();
+        $pattern = preg_match('~(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$~', $password);
+       
+        if (!$pattern || strlen($password) <8) {
+          $_SESSION['error'] = "Password has to contain at least 1 upper case letter, 1 number or special character and must be at least 8 characters in length!";
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          $_SESSION['error'] = "Invalid email format!";
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
+        } else {
+          $_SESSION['success'] = "Your changes were made";
+          $userRepository->edit($id, $username, $email, $password, $isAdmin);
+          header('Location:'. $GLOBALS['appurl'] . '/user/edit');
+        }
+      }
+		}
     
     public function delete($uid) {
       

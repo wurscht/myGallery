@@ -77,17 +77,17 @@ class GalleryController {
       if($check !== false) {
         $uploadOk = 1;
       } else {
-        $_SESSION['error'] = "File is not an image.";
+        $_SESSION['error'] = "Fehler. Das Bild ist zu gross. Höchste Grösse 4 MB.";
         $uploadOk = 0;
       }
         
       if ($_FILES['gallery_picture']["size"] > 4000000) {
-        $_SESSION['error'] = "Sorry, your file is too large.";
+        $_SESSION['error'] = "Sorry, dein Bild ist zu gross. Höchste Grösse 4 MB.";
         $uploadOk = 0;
       }
     
       if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-        $_SESSION['error'] = "Sorry, only JPG, JPEG & PNG files are allowed.";
+        $_SESSION['error'] = "Sorry, nur JPG, JPEG und PNG Dateien sind erlaubt.";
         $uploadOk = 0;
       }
         
@@ -96,7 +96,7 @@ class GalleryController {
       }*/
         
       if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
+        echo "Sorry, deine Datei wurde nicht hochgeladen.";
       } else {
         if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
             $galleryRepository->create($name, $description, $uid);
@@ -143,7 +143,7 @@ class GalleryController {
             imagecopyresampled($dest_img, $src_file, 0, 0, $src_x, $src_y, $crop_w, $crop_h, $orig_w, $orig_h); // Kopiert Bild in Bild Ressource 
             imagejpeg($dest_img, $thumbnail_path); // Erstellt JPG und legt es im Pfad ab
           } else {
-            $_SESSION['error'] = "Sorry, there was an error uploading your file.";
+            $_SESSION['error'] = "Sorry, beim Upload der Datei ist ein Fehler aufgetreten.";
           }
         }
       header('Location:'. $GLOBALS['appurl'] . '/gallery');
@@ -215,22 +215,22 @@ class GalleryController {
       if($check !== false) {
         $uploadOk = 1;
       } else {
-        $_SESSION['error'] = "File is not an image.";
+        $_SESSION['error'] = "Fehler. Das Bild ist zu gross. Höchste Grösse 4 MB.";
         $uploadOk = 0;
       }
         
       if ($_FILES['gallery_picture']["size"] > 4000000) {
-          $_SESSION['error'] = "Sorry, your file is too large.";
+          $_SESSION['error'] = "Sorry, dein Bild ist zu gross. Höchste Grösse 4 MB.";
           $uploadOk = 0;
       }
     
       if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-          $_SESSION['error'] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+          $_SESSION['error'] = "Sorry, nur JPG, JPEG und PNG Dateien sind erlaubt.";
           $uploadOk = 0;
       }
         
       if ($uploadOk == 0) {
-          echo "Sorry, your file was not edited.";
+          echo "Sorry, deine Datei wurde nicht bearbeitet.";
       } else {
           if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
               $galleryRepository->edit($gid, $name, $description);
@@ -277,7 +277,7 @@ class GalleryController {
               imagejpeg($dest_img, $thumbnail_path); // Erstellt JPG und legt es im Pfad ab
             
           } else {
-              $_SESSION['error'] = "Sorry, there was an error uploading your file.";
+              $_SESSION['error'] = "Sorry, beim Upload der Datei ist ein Fehler aufgetreten.";
           }
       }
         
