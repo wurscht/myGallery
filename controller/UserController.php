@@ -113,5 +113,30 @@ require_once '../repository/PictureRepository.php';
       
       header('Location:'. $GLOBALS['appurl'] . '/login');
     }
+    
+    public function deleteOthers($uid) {
+      
+      $userRepository = new UserRepository();
+    	$galleryRepository = new GalleryRepository();
+			$pictureRepository = new PictureRepository();
+				
+			$galleries = $galleryRepository->readAll();
+			$pictures = $pictureRepository->readAll();
+			
+			foreach($galleries as $gallery) {
+				if($gallery->uid == $uid) {
+					foreach($pictures as $picture) {
+						if ($picture->gid == $gallery->gid) {
+								unlink($picture->path);
+								unlink($picture->thumb_path);
+						}
+					}
+				}
+			}	
+        
+      $userRepository->deleteById($uid);
+      
+      header('Location:'. $GLOBALS['appurl'] . '/user/edit/');
+    }
   }
 ?>

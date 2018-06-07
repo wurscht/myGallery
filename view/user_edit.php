@@ -74,7 +74,7 @@
 		    				<input id="send" name="otherSend" type="submit" class="btn btn-primary" value="edit" >
 		  				</div>
       				<div class="col-md-4">
-      					<a name="delete" class="btn btn-danger" href="<?php echo $GLOBALS['appurl'] . "/user/delete/" . $_SESSION['userId']; ?>" >Delete</a>
+      					<a name="delete" class="btn btn-danger" href="<?php echo $GLOBALS['appurl'] . "/user/deleteOthers/" . $nonadmins->uid; ?>" >Delete</a>
 		  				</div>
 						</div>
 					<?php endforeach ?>

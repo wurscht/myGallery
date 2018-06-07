@@ -37,11 +37,14 @@
         <?php endif ?>
         
 		<div class="form-group d-flex justify-content-start">
-		  <div class="col-md-1">
+		  <div class="mr-3">
 		    <input id="send" name="send" type="submit" class="btn btn-primary" value="edit" >
 		  </div>
-          <div class="col-md-4">
+          <div class="mr-3">
             <a name="delete" class="btn btn-danger" href="<?php echo $GLOBALS['appurl'] . "/gallery/delete/" . $gallery->gid; ?>" >Delete</a>
+		  </div>
+          <div>
+            <a name="back" class="btn btn-primary" href="<?php echo $GLOBALS['appurl'] . "/gallery/show/" . $gallery->gid; ?>">Back</a>
 		  </div>
 		</div>
 	</div>

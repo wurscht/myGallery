@@ -91,10 +91,6 @@ class GalleryController {
         $uploadOk = 0;
       }
         
-      /*if (file_exists($_FILES["gallery_picture"]["tmp_name"])) {
-          
-      }*/
-        
       if ($uploadOk == 0) {
         echo "Sorry, deine Datei wurde nicht hochgeladen.";
       } else {
