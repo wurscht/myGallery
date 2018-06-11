@@ -17,14 +17,14 @@ class GalleryRepository extends Repository {
     return $statement->insert_id;
   }
   
-  public function edit($gid, $name, $description)
+  public function edit($gid, $name, $description, $public)
     {
-        $query = "UPDATE $this->tableName SET name = ?, description = ? WHERE gid = ?";
+        $query = "UPDATE $this->tableName SET name = ?, description = ?, public = ? WHERE gid = ?";
             
         $statement = ConnectionHandler::getConnection()->prepare($query);
         if($statement === false)
             echo ConnectionHandler::getConnection()->error;
-        $statement->bind_param('ssi', $name, $description, $gid);
+        $statement->bind_param('ssii', $name, $description, $public, $gid);
         
         if (!$statement->execute()) {
             throw new Exception($statement->error);

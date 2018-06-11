@@ -77,22 +77,22 @@ class GalleryController {
       if($check !== false) {
         $uploadOk = 1;
       } else {
-        $_SESSION['error'] = "Fehler. Das Bild ist zu gross. Höchste Grösse 4 MB.";
+        $_SESSION['error'] = "Sorry, your picture is too large (bigger than 4 MB).";
         $uploadOk = 0;
       }
         
       if ($_FILES['gallery_picture']["size"] > 4000000) {
-        $_SESSION['error'] = "Sorry, dein Bild ist zu gross. Höchste Grösse 4 MB.";
+        $_SESSION['error'] = "Sorry, your picture is too large (bigger than 4 MB).";
         $uploadOk = 0;
       }
     
       if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-        $_SESSION['error'] = "Sorry, nur JPG, JPEG und PNG Dateien sind erlaubt.";
+        $_SESSION['error'] = "Sorry, only JPG, JPEG and PNG files are allowed.";
         $uploadOk = 0;
       }
         
       if ($uploadOk == 0) {
-        echo "Sorry, deine Datei wurde nicht hochgeladen.";
+        echo "Sorry, your file was not uploaded.";
       } else {
         if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
             $galleryRepository->create($name, $description, $uid);
@@ -139,7 +139,7 @@ class GalleryController {
             imagecopyresampled($dest_img, $src_file, 0, 0, $src_x, $src_y, $crop_w, $crop_h, $orig_w, $orig_h); // Kopiert Bild in Bild Ressource 
             imagejpeg($dest_img, $thumbnail_path); // Erstellt JPG und legt es im Pfad ab
           } else {
-            $_SESSION['error'] = "Sorry, beim Upload der Datei ist ein Fehler aufgetreten.";
+            $_SESSION['error'] = "Sorry, there was an error uploading your file.";
           }
         }
       header('Location:'. $GLOBALS['appurl'] . '/gallery');
@@ -192,18 +192,34 @@ class GalleryController {
       
     $galleryRepository = new GalleryRepository();
     $pictureRepository = new PictureRepository();
+    
+    if (isset($_POST['send'])) {
+      $gid = htmlspecialchars($_POST['id']);
+      $name = htmlspecialchars($_POST['gallery_name']);
+      $description = htmlspecialchars($_POST['gallery_description']);
+			if ($_POST['gallery_public'] == 'on') {
+          $public = 1; 
+        } else {
+          $public = 0;
+        }
+      $view->gallery = $galleryRepository->readById($gid);
+      $galleryRepository->edit($gid, $name, $description, $public);
+    }
+      header('Location:'. $GLOBALS['appurl'] . '/gallery');
+  }
+	
+	public function doUpload() {
+		$galleryRepository = new GalleryRepository();
+    $pictureRepository = new PictureRepository();
     $target_dir = "uploads/";
     $thumbs_dir = 'uploads/thumbs/';
     $target_file = $target_dir . basename($_FILES["gallery_picture"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     
-    if (isset($_POST['send'])) {
-      $gid = htmlspecialchars($_POST['id']);
-      $name = htmlspecialchars($_POST['gallery_name']);
-      $description = htmlspecialchars($_POST['gallery_description']);
+    if (isset($_POST['upload'])) {
+      $gid = htmlspecialchars($_POST['gid']);
       $view->gallery = $galleryRepository->readById($gid);
-      $galleryRepository->edit($gid, $name, $description);
       $uid = $_SESSION['userId'];
       $picture_name = htmlspecialchars($_POST['picture_name']);
       $check = getimagesize($_FILES["gallery_picture"]["tmp_name"]);
@@ -211,25 +227,24 @@ class GalleryController {
       if($check !== false) {
         $uploadOk = 1;
       } else {
-        $_SESSION['error'] = "Fehler. Das Bild ist zu gross. Höchste Grösse 4 MB.";
+        $_SESSION['error'] = "Sorry, your picture is too large (bigger than 4 MB).";
         $uploadOk = 0;
       }
         
       if ($_FILES['gallery_picture']["size"] > 4000000) {
-          $_SESSION['error'] = "Sorry, dein Bild ist zu gross. Höchste Grösse 4 MB.";
+          $_SESSION['error'] = "Sorry, your picture is too large (bigger than 4 MB).";
           $uploadOk = 0;
       }
     
       if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-          $_SESSION['error'] = "Sorry, nur JPG, JPEG und PNG Dateien sind erlaubt.";
+          $_SESSION['error'] = "Sorry, only JPG, JPEG and PNG files are allowed.";
           $uploadOk = 0;
       }
         
       if ($uploadOk == 0) {
-          echo "Sorry, deine Datei wurde nicht bearbeitet.";
+          echo "Sorry, your file was not uploaded.";
       } else {
           if (move_uploaded_file($_FILES["gallery_picture"]["tmp_name"], $target_file)) {
-              $galleryRepository->edit($gid, $name, $description);
               $_FILES["gallery_picture"]["name"] = $picture_name . "." . $imageFileType;
               $thumbnail_path = $thumbs_dir . basename($_FILES["gallery_picture"]["name"]);
               $pictureRepository->create($picture_name, $target_file, $thumbnail_path, $gid);
@@ -273,13 +288,15 @@ class GalleryController {
               imagejpeg($dest_img, $thumbnail_path); // Erstellt JPG und legt es im Pfad ab
             
           } else {
-              $_SESSION['error'] = "Sorry, beim Upload der Datei ist ein Fehler aufgetreten.";
+              $_SESSION['error'] = "Sorry, there was an error uploading your file.";
           }
       }
         
       header('Location:'. $GLOBALS['appurl'] . '/gallery');
     }
-  }
+		
+		
+	}
   
   public function nameError() {
     

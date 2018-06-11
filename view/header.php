@@ -25,6 +25,7 @@
             if (isset($_SESSION['userId']) == 0) {
               echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/login'>Login</a></li>";
               echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/login/registration'>Registration</a></li>";
+							echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/login/galleries'>Public galleries</a></li>";
             } else {
               echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/gallery'>My Galleries</a></li>";
               echo "<li class='nav-item'><a class='nav-link' href='$GLOBALS[appurl]/gallery/create'>Create Gallery</a></li>";

@@ -1,5 +1,7 @@
 <?php
 require_once '../repository/UserRepository.php';
+require_once '../repository/GalleryRepository.php';
+require_once '../repository/PictureRepository.php';
 /**
  * Controller for login and registration.
  *
@@ -118,5 +120,37 @@ require_once '../repository/UserRepository.php';
       session_destroy();
       header('Location:'. $GLOBALS['appurl'] . '/login');
     }
+		
+		public function galleries() {
+			$galleryRepository = new GalleryRepository();
+    	$pictureRepository = new PictureRepository();
+    
+    	$view = new View('galleries_public');
+    	$view->title = 'Public galleries';
+    	$view->heading = 'Public galleries';
+    	$view->galleries = $galleryRepository->readAll();
+    	$view->pictures = $pictureRepository->readAll();
+    
+    	$view->display();
+  	}
+		
+		public function show($galleryId) {
+    
+    $galleryRepository = new GalleryRepository();
+    $pictureRepository = new PictureRepository();
+    
+    $gid = $galleryId;
+    if(!$gid){
+      echo "Gallery has no id!";
+    }
+    
+    $view = new View('gallery_public_show');
+    $view->title = "Gallery detail";
+    $view->heading = "Gallery detail";
+    $view->pictures = $pictureRepository->readAll();
+    $view->gallery = $galleryRepository->readById($gid);
+    
+    $view->display();
+  }
 }
 ?>
