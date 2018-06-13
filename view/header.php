@@ -9,7 +9,10 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
     <!-- Custom styles for this template -->
     <link href="<?=$GLOBALS['appurl']?>/css/style.css" rel="stylesheet">
-	<script src="<?=$GLOBALS['appurl']?>/js/jscript.js"></script>
+		<script src="<?=$GLOBALS['appurl']?>/js/jscript.js"></script>
+		<link rel="stylesheet" href="<?=$GLOBALS['appurl']?>/css/lightbox.css">
+		<script src="<?=$GLOBALS['appurl']?>/js/lightbox.js"></script>
+		<script src="<?=$GLOBALS['appurl']?>/js/jquery.min.js"></script>
     <title><?= $title ?></title>
   </head>
   <body>
