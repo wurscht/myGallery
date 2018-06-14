@@ -11,7 +11,9 @@
             <a class="lightbox" data-lightbox="show-1" href="/myGallery/public/<?php echo $picture->path ?>">
               <img class="img-thumbnail" src='/myGallery/public/<?php echo $picture->thumb_path ?>' alt="Preview picture">
             </a>
-            <h4 class="text-center"><?php echo $picture->name ?></h3>
+            <div class="public-text-content">
+              <h4 class="text-center"><?php echo $picture->name ?></h3>
+            </div>
           </div>
           <?php 
             $rowCount++;
